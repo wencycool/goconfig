@@ -119,11 +119,17 @@ func (c *ConfigFile) read(reader io.Reader) (err error) {
 				i = i + pos
 				key = line[qLen:pos] //保留引号内的两端的空格
 			} else {
+				//增加对mysql只有key的支持
+				//对于mysql来说不会有key被keyQuote包围的情况
 				i = strings.IndexAny(line, "=:")
 				if i <= 0 {
-					return readError{ERR_COULD_NOT_PARSE, line}
+					key = strings.TrimSpace(line)
+					i = lineLengh - 1
+					//return readError{ERR_COULD_NOT_PARSE, line}
+				} else {
+					key = strings.TrimSpace(line[0:i])
 				}
-				key = strings.TrimSpace(line[0:i])
+
 			}
 			//[SWH|+];
 

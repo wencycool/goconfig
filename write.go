@@ -84,6 +84,10 @@ func SaveConfigData(c *ConfigFile, out io.Writer) (err error) {
 				}
 
 				// Write key and value.
+				//如果value为"",直接忽略equalSign,主要是为了兼容mysql
+				if value == "" {
+					equalSign = ""
+				}
 				if _, err = buf.WriteString(keyName + equalSign + value + LineBreak); err != nil {
 					return err
 				}
