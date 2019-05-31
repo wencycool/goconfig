@@ -17,6 +17,7 @@ package goconfig
 import (
 	"bytes"
 	"fmt"
+	"github.com/smartystreets/assertions/should"
 	"io/ioutil"
 	"testing"
 
@@ -190,6 +191,19 @@ func TestGetKeyList(t *testing.T) {
 
 		Convey("Get key list that not exist", func() {
 			So(c.GetKeyList("404"), ShouldBeNil)
+		})
+	})
+}
+
+func TestGetMysqldNovalueKeyList(t *testing.T) {
+	Convey("Get my.cnf novalue key list", t, func() {
+		c, err := LoadConfigFile("testdata/my.cnf")
+		So(err, ShouldBeNil)
+		So(c, ShouldNotBeNil)
+
+		Convey("Get key list that no value exist", func() {
+			So(c.GetKeyList("mysqld"), should.Contain, "skip_ssl")
+			So(c.GetKeyList("mysqld"), should.Contain, "skip-name-resolve")
 		})
 	})
 }
